@@ -1,0 +1,23 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mapper.userInfo">
+    <resultMap id="User" type="com.threewater.template.background.domain.UserInfo">
+        <id column="id" property="id" />
+        <result column="name" property="name"/>
+        <result column="sex" property="sex" />
+        <result column="modtime" property="mod" jdbcType="DATE"/>
+    </resultMap>
+    <sql id="selUser">
+        id, name, sex, modtime
+    </sql>
+    <select id="selectUserById" resultMap="User">
+        select
+        <include refid="selUser"/>
+        from userInfo where id = #{id};
+    </select>
+
+    <insert id="insertUser" parameterType="User">
+       insert into userInfo(name, sex, modtime) values(#{name}, #{sex}, #{mod});
+    </insert>
+</mapper>

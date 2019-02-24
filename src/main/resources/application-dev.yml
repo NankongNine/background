@@ -1,0 +1,97 @@
+spring:
+  #热部署配置，排除某些文件
+#  devtools:
+#    restart:
+#      exclude: application.yml,application-dev.yml
+  #自定义springboot启动banner
+  banner:
+    location: classpath:config/banner.txt
+  #定义静态资源路径
+  resources:
+    static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/,classpath:/upload/
+  #数据源配置
+  datasource:
+    #driver-class-name: com.mysql.jdbc.Driver 可以不指定，自动探测
+    url: jdbc:mysql://148.70.209.238:3306/weixin?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
+    username: weixin
+    password: weixin
+    #定义数据源连接池类型
+    type: com.alibaba.druid.pool.DruidDataSource
+    #=========redis基础配置=========
+  redis:
+    database: 0
+    host: 127.0.0.1
+    port: 6379
+    # 连接超时时间 单位 ms（毫秒）
+    timeout: 3000ms
+    #=========redis线程池设置=========
+    jedis:
+      pool:
+        # 连接池中的最大空闲连接，默认值是8。
+        max-idle: 200
+        #连接池中的最小空闲连接，默认值是0。
+        min-idle: 200
+        # 如果赋值为-1，则表示不限制；pool已经分配了maxActive个jedis实例，则此时pool的状态为exhausted(耗尽)。
+        max-active: 2000
+        # 等待可用连接的最大时间，单位毫秒，默认值为-1，表示永不超时
+        max-wait: 1000ms
+  data:
+    elasticsearch:
+      cluster-name: elasticsearch
+      cluster-nodes: 127.0.0.1:9300
+      repositories:
+        enabled: true
+  #安全配置
+  security:
+    user:
+      name: admin
+      password: 123456
+
+mybatis:
+  #mybatis配置文件路径
+  config-location: classpath:mybatis-config.xml
+  #配置扫描实体类，可以直接在配置文件中指定，也可以配置在这里
+  #type-aliases-package: com.ch.bootproject.domain
+  #mapper-locations指定mapper xml文件路径
+  #mapper-locations: com.ch.bootproject.mapper
+
+# 分页配置
+pagehelper:
+  helper-dialect: mysql
+  reasonable: true
+  support-methods-arguments: true
+  params: count=countSql
+
+#更改tomcat端口
+server:
+  port: 8080
+
+#打开指定包的调试语句日志打印
+#logging:
+#  level:
+#    root: info
+#    com.ch.bootproject.mapper: debug
+
+#自定义属性
+custom:
+  upload:
+    #自定义文件上传路径
+    path: C:\Users\CH\IdeaProjects\bootproject\src\main\resources\upload\
+    #自定义单个文件上传最大值，单位M
+    maxFileSize: 10
+    #自定义总文件上传最大值，单位M
+    maxReqSize: 100
+
+#Rocketmq配置---自定义
+apache:
+  rocketmq:
+    # 主题---自定义
+    topic: testTopic
+    # NameServer地址---自定义
+    namesrvAddr: 127.0.0.1:9876
+    consumer:
+      # 消费者的组名---自定义
+      PushConsumer: orderConsumer
+    producer:
+      # 生产者的组名---自定义
+      producerGroup: Producer

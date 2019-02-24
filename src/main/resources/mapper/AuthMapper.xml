@@ -1,0 +1,75 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mapper.auth">
+    <resultMap id="userMap" type="java.util.Map">
+        <id column="id" property="id" />
+        <result column="username" property="username"/>
+        <result column="password" property="password" />
+        <result column="salt" property="salt" />
+        <result column="role" property="role" />
+        <result column="description" property="description" />
+        <result column="permission" property="permission" />
+        <result column="url" property="url" />
+        <result column="locked" property="locked"/>
+    </resultMap>
+
+    <resultMap id="userMapOnly" type="com.threewater.template.background.domain.User">
+        <id column="id" property="id" />
+        <result column="username" property="username"/>
+        <result column="password" property="password" />
+        <result column="salt" property="salt" />
+        <result column="locked" property="locked"/>
+    </resultMap>
+
+    <select id="selectUserPermissionByName" resultMap="userMap">
+        select
+            u.id, u.username, u.password, u.salt, u.locked, r.role, r.description, p.permission, p.url
+        from users u, roles r, users_roles ur, permissions p, roles_permissions rp
+        where u.username=#{name} and u.id=ur.user_id and r.id=ur.role_id and r.id=rp.role_id and rp.permission_id=p.id;
+    </select>
+
+    <select id="selectUserByName" resultMap="userMapOnly">
+        select
+            u.id, u.username, u.password, u.salt, u.locked
+        from users u
+        where u.username=#{name};
+    </select>
+
+    <resultMap id="usersMap" type="com.threewater.template.background.domain.User">
+        <id property="id" column="id"/>
+        <result column="username" property="username"/>
+        <result column="password" property="password"/>
+        <result column="salt" property="salt"/>
+        <result column="locked" property="locked"/>
+        <collection property="roles" column="id" javaType="ArrayList" ofType="roleMap" select="mapper.auth.findRoles"/>
+    </resultMap>
+
+    <resultMap id="roleMap" type="com.threewater.template.background.domain.Role">
+        <id property="id" column="id"/>
+        <result column="role" property="role"/>
+        <result column="description" property="description"/>
+        <result column="available" property="available"/>
+        <collection property="permissions" column="id" javaType="ArrayList" ofType="permissionMap" select="mapper.auth.findPermissions"/>
+    </resultMap>
+
+    <resultMap id="permissionMap" type="com.threewater.template.background.domain.Permissions">
+        <id property="id" column="id"/>
+        <result property="permission" column="permission"/>
+        <result property="description" column="description"/>
+        <result property="url" column="url"/>
+        <result column="available" property="available"/>
+    </resultMap>
+
+    <select id="findUser" parameterType="int" resultMap="usersMap">
+        select * from users where id=#{id}
+    </select>
+
+    <select id="findRoles" parameterType="int" resultMap="roleMap">
+        select * from roles where id in (select ur.role_id from users_roles ur, roles r where ur.user_id = #{id} and ur.role_id=r.id)
+    </select>
+
+    <select id="findPermissions" parameterType="int" resultMap="permissionMap">
+        select * from permissions where id in (select rp.permission_id from roles_permissions rp, permissions p where p.id=rp.permission_id and rp.role_id=#{id})
+    </select>
+</mapper>
