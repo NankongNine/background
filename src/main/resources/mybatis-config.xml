@@ -4,6 +4,8 @@
 <configuration>
     <settings>
         <setting name="logImpl" value="STDOUT_LOGGING" />
+        <!--打开驼峰映射-->
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
     </settings>
     <!-- 批量设置别名(可以不配) 作用：就是在mapper.xml文件中直接写类名，也可以不用写全路径名。 -->
     <typeAliases>
